@@ -236,7 +236,7 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Keep Learning, with entirely different exercises.',
+                        'Goodbye Monotonous Learning!!!',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -244,7 +244,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       const Text(
-                        'Here we have entirely different exercises for you to boost your French skills and help you retain longer. Nothing monotonous, just fun and engaging exercises updated monthly.',
+                        'Here we have entirely different exercises for you to boost your French skills and help you retain longer.',
                         style: TextStyle(fontSize: 18, color: Colors.black87),
                       ),
                       const SizedBox(height: 10),
