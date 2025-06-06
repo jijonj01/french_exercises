@@ -1,53 +1,60 @@
 /// Data class for each module
 class ModuleItem {
+  final int id;
   final String moduleLabel;
   final String title;
+  final String imageUrl;
   final String duration;
   final int lessonsCount;
   final bool isLocked;
-  final String path;
+  final List<SubModuleItem> subModules;
 
   const ModuleItem({
+    required this.id,
     required this.moduleLabel,
     required this.title,
+    required this.imageUrl,
     required this.duration,
     required this.lessonsCount,
     required this.isLocked,
-    required this.path,
+    required this.subModules,
   });
 }
 
-final List<ModuleItem> a1 = const [
+class SubModuleItem {
+  final String title;
+  final String path;
+
+  const SubModuleItem({required this.title, required this.path});
+}
+
+final List<ModuleItem> a1Modules = const [
   ModuleItem(
-    title: 'How it all started. Explanation',
-    moduleLabel: 'Module 1 Lesson 1',
-    duration: '22 min',
-    path: '/a1exercise/1',
-    lessonsCount: 2,
+    id: 1,
+    title: 'A1 Course',
+    imageUrl: 'https://picsum.photos/800/1200?random=10',
+    moduleLabel: 'A1 Course',
+    duration: '2 hours',
+    lessonsCount: 6,
     isLocked: false,
+    subModules: [
+      SubModuleItem(title: '1', path: '/a1exercise/1'),
+      SubModuleItem(title: '2', path: '/a1exercise/2'),
+      SubModuleItem(title: '3', path: '/a1exercise/3'),
+    ],
   ),
   ModuleItem(
-    title: 'What we didn’t know about catastrophe',
-    moduleLabel: 'Module 1 Lesson 2',
-    duration: '12 min',
-    path: '/a1exercise/2',
-    lessonsCount: 2,
-    isLocked: false,
-  ),
-  ModuleItem(
-    title: 'The rise of language. Deep dive',
-    moduleLabel: 'Module 1 Lesson 3',
-    duration: '18 min',
-    path: '/a1exercise/3',
+    id: 2,
+    title: 'A1 Course - Module 2',
+    imageUrl: 'https://picsum.photos/800/1200?random=20',
+    moduleLabel: 'A1 Course - Module 2',
+    duration: '1 hour',
     lessonsCount: 3,
     isLocked: false,
-  ),
-  ModuleItem(
-    title: 'The rise of language. Deep dive 1',
-    moduleLabel: 'Module 2 Lesson 1',
-    duration: '18 min',
-    path: '/a1exercise/4',
-    lessonsCount: 3,
-    isLocked: false,
+    subModules: [
+      SubModuleItem(title: '1', path: '/a1exercise/4'),
+      SubModuleItem(title: '2', path: '/a1exercise/5'),
+      SubModuleItem(title: '3', path: '/a1exercise/6'),
+    ],
   ),
 ];

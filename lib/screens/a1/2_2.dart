@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-class A1Four extends StatefulWidget {
+class A1Five extends StatefulWidget {
   final String imageUrl;
-  const A1Four({Key? key, required this.imageUrl}) : super(key: key);
+  const A1Five({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
-  _A1FourState createState() => _A1FourState();
+  _A1FiveState createState() => _A1FiveState();
 }
 
-class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
+class _A1FiveState extends State<A1Five> with SingleTickerProviderStateMixin {
   // ====== Color constants ======
   static const Color headerColor = Color(0xFF2c3e50);
   static const Color primaryBlue = Color(0xFF3498db);
@@ -186,21 +186,21 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
         case 1:
           if (!q1MuetsAnswered) {
             q1MuetsSelected = choice;
-            q1MuetsCorrect = (choice == 2); // 'T' is correct
+            q1MuetsCorrect = (choice == 2); // 'ps' is correct
             q1MuetsAnswered = true;
           }
           break;
         case 2:
           if (!q2MuetsAnswered) {
             q2MuetsSelected = choice;
-            q2MuetsCorrect = (choice == 2); // 'S' is correct
+            q2MuetsCorrect = (choice == 4); // 'd' is correct
             q2MuetsAnswered = true;
           }
           break;
         case 3:
           if (!q3MuetsAnswered) {
             q3MuetsSelected = choice;
-            q3MuetsCorrect = (choice == 3); // 'L' is correct
+            q3MuetsCorrect = (choice == 3); // 'p' is correct
             q3MuetsAnswered = true;
           }
           break;
@@ -221,7 +221,7 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
         case 2:
           if (!q2ExceptionAnswered) {
             q2ExceptionSelected = choice;
-            q2ExceptionCorrect = (choice == 1); // 'Oui' is correct
+            q2ExceptionCorrect = (choice == 2); // 'Non' is correct
             q2ExceptionAnswered = true;
           }
           break;
@@ -242,15 +242,14 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
         case 2:
           if (!q2LiaisonAnswered) {
             q2LiaisonSelected = choice;
-            q2LiaisonCorrect = (choice == 2); // 'Non' is correct
+            q2LiaisonCorrect = (choice == 1); // 'Oui' is correct
             q2LiaisonAnswered = true;
           }
           break;
         case 3:
           if (!q3LiaisonAnswered) {
             q3LiaisonSelected = choice;
-            q3LiaisonCorrect = (choice == 2);
-            // 'Une liaison entre « suis » et « indien »' is choice 2
+            q3LiaisonCorrect = (choice == 1); // 's et a' is correct
             q3LiaisonAnswered = true;
           }
           break;
@@ -265,21 +264,21 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
         case 1:
           if (!q1ElisionAnswered) {
             final answer = _q1ElisionController.text.trim().toLowerCase();
-            q1ElisionCorrect = (answer == "l'animal");
+            q1ElisionCorrect = (answer == "j'aime");
             q1ElisionAnswered = true;
           }
           break;
         case 2:
           if (!q2ElisionAnswered) {
             final answer = _q2ElisionController.text.trim().toLowerCase();
-            q2ElisionCorrect = (answer == "j'ai amis");
+            q2ElisionCorrect = (answer == "c'est");
             q2ElisionAnswered = true;
           }
           break;
         case 3:
           if (!q3ElisionAnswered) {
             final answer = _q3ElisionController.text.trim().toLowerCase();
-            q3ElisionCorrect = (answer == "vous et ils allez");
+            q3ElisionCorrect = (answer == "moi je suis");
             q3ElisionAnswered = true;
           }
           break;
@@ -460,12 +459,13 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           _buildExplanation(
             "Astuces #1 : Sons Muets",
             "En français, la dernière lettre ou le dernier son consonantique de nombreux "
-                "mots ne se prononce pas.\n\nExemple : Salut (le « t » final est muet).",
+                "mots ne se prononce pas.\n\n"
+                "Exemples : Champs (le « ps » final est muet), Froid (le « d » final est muet).",
           ),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 1 : Dans « Salut », quelle lettre finale est muette ?",
-            options: const ['S', 'T', 'U', 'L'],
+                "Question 1 : Dans « Champs », quelle combinaison de lettres est muette ?",
+            options: const ['Ch', 'ps', 'am', 'mp'],
             selectedOption: q1MuetsSelected,
             isCorrect: q1MuetsCorrect,
             isAnswered: q1MuetsAnswered,
@@ -475,8 +475,8 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 2 : Dans « Paris », quelle lettre finale n'est pas prononcée ?",
-            options: const ['P', 'S', 'R', 'I'],
+                "Question 2 : Dans « Froid », quelle lettre finale n'est pas prononcée ?",
+            options: const ['F', 'r', 'o', 'd'],
             selectedOption: q2MuetsSelected,
             isCorrect: q2MuetsCorrect,
             isAnswered: q2MuetsAnswered,
@@ -486,8 +486,8 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 3 : Dans « Montreal » (sans accent), quelle consonne finale est muette ?",
-            options: const ['M', 'T', 'L', 'N'],
+                "Question 3 : Dans « Beaucoup », quelle lettre finale est muette ?",
+            options: const ['B', 't', 'p', 'u'],
             selectedOption: q3MuetsSelected,
             isCorrect: q3MuetsCorrect,
             isAnswered: q3MuetsAnswered,
@@ -516,7 +516,8 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           _buildExplanation(
             "Astuces #2 : Exception « Bonjour »",
             "Contrairement aux mots à son muet, dans « Bonjour », le son consonantique "
-                "final « r » se prononce.\n\nIl signifie « bonne journée ». Vous devez prononcer le « r » final.",
+                "final « r » se prononce.\n\n"
+                "Il signifie « bonne journée ». Vous devez prononcer le « r » final.",
           ),
           _buildMultipleChoiceQuestion(
             questionText:
@@ -531,7 +532,7 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 2 : Le mot « Amour » a-t-il son « r » final prononcé de la même façon ?",
+                "Question 2 : Dans « Monsieur », le « r » final est-il également prononcé ?",
             options: const ['Oui', 'Non'],
             selectedOption: q2ExceptionSelected,
             isCorrect: q2ExceptionCorrect,
@@ -562,13 +563,11 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
             "Astuces #3 : La Liaison",
             "En français, lorsqu’un mot se termine par une consonne et que le mot suivant "
                 "commence par une voyelle, on lie les deux mots pour faciliter la prononciation.\n\n"
-                "Exemples : mon ami (prononcé « mon‿ami »).\n"
-                "Exemple avec chiffre : neuf œufs (prononcé « n‿œf‿z‿œf »).\n"
-                "Autre exemple : Je suis indien (prononcé « Je sui‿z‿indien »).",
+                "Exemples : mon ami (prononcé « mon‿ami »), vous avez (prononcé « vous‿avez »), ils arrivent (prononcé « ils‿arrivent »).",
           ),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 1 : Y a-t-il une liaison dans « mon ami » ?",
+                "Question 1 : Y a-t-il une liaison dans « vous avez » ?",
             options: const ['Oui', 'Non'],
             selectedOption: q1LiaisonSelected,
             isCorrect: q1LiaisonCorrect,
@@ -579,7 +578,7 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 2 : Y a-t-il une liaison dans « mon chat » ?",
+                "Question 2 : Y a-t-il une liaison dans « petit homme » ?",
             options: const ['Oui', 'Non'],
             selectedOption: q2LiaisonSelected,
             isCorrect: q2LiaisonCorrect,
@@ -590,13 +589,8 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildMultipleChoiceQuestion(
             questionText:
-                "Question 3 : Dans « Je suis indien », que se passe-t-il ?",
-            options: const [
-              "Il n’y a pas de liaison",
-              "Une liaison entre « suis » et « indien »",
-              "Une liaison entre « Je » et « suis »",
-              "Une liaison entre « suis » et « Je »",
-            ],
+                "Question 3 : Dans « ils arrivent », quelle liaison se produit ?",
+            options: const ["s et a", "i et l", "t et h", "i et a"],
             selectedOption: q3LiaisonSelected,
             isCorrect: q3LiaisonCorrect,
             isAnswered: q3LiaisonAnswered,
@@ -627,11 +621,11 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
             "En français, pour éviter le hiatus (deux voyelles consécutives), on "
                 "remplace la voyelle finale d’un mot par une apostrophe si le mot suivant "
                 "commence par une voyelle.\n\n"
-                "Exemple : Le alphabet devient l’alphabet.",
+                "Exemple : Je aime devient j’aime, Ce est devient c’est.",
           ),
           _buildTextQuestion(
             questionText:
-                "Question 1 : Complétez correctement : Le ____nimal\n(Le mot à utiliser est « animal ».)",
+                "Question 1 : Complétez correctement : Je ____vite\n(Le mot à utiliser est « aime ».)",
             controller: _q1ElisionController,
             isAnswered: q1ElisionAnswered,
             isCorrect: q1ElisionCorrect,
@@ -641,7 +635,7 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildTextQuestion(
             questionText:
-                "Question 2 : Complétez correctement : Je ai ____s voisins\n(Le mot à utiliser est « amis ».)",
+                "Question 2 : Complétez correctement : Ce ____t\n(Le mot à utiliser est « est ».)",
             controller: _q2ElisionController,
             isAnswered: q2ElisionAnswered,
             isCorrect: q2ElisionCorrect,
@@ -651,7 +645,7 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildTextQuestion(
             questionText:
-                "Question 3 : Complétez correctement : Vous et ____ allez\n(Le mot à utiliser est « ils ».)",
+                "Question 3 : Complétez correctement : Moi ____e suis\n(Le mot à utiliser est « je ».)",
             controller: _q3ElisionController,
             isAnswered: q3ElisionAnswered,
             isCorrect: q3ElisionCorrect,

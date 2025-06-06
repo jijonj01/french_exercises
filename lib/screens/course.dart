@@ -36,7 +36,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   }
 
   // Dummy data for modules
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,62 +83,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                             Icons.arrow_back_ios_new,
                             size: 20,
                             color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Bookmark icon (top right)
-                    Positioned(
-                      top: 40,
-                      right: 16,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.bookmark_border,
-                          size: 24,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-
-                    // “Start class” button (bottom-right overlay)
-                    Positioned(
-                      bottom: 16,
-                      right: 24,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber[600],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          elevation: 4,
-                        ),
-                        onPressed: () async {
-                          // Navigate to last opened exercise or first one
-                          String pathToNavigate =
-                              lastOpenedExercise ?? a1.first.path;
-                          await ModuleProgressService.setLastOpenedExercise(
-                            pathToNavigate,
-                          );
-                          if (mounted) {
-                            context.push(pathToNavigate);
-                          }
-                        },
-                        child: const Text(
-                          'Start class',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -269,28 +212,18 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children:
-                          a1.asMap().entries.map((entry) {
+                          a1Modules.asMap().entries.map((entry) {
                             final idx = entry.key;
                             final item = entry.value;
-                            final bool isLast = idx == a1.length - 1;
-                            final bool isLastPlayed =
-                                lastOpenedExercise == item.path;
+                            final bool isLast = idx == a1Modules.length - 1;
+                            final bool isCurrentlyLastPlayed =
+                                lastOpenedExercise == item.id.toString();
                             return _ModuleTile(
-                              onTap: () async {
-                                // Store the last opened exercise before navigating
-                                await ModuleProgressService.setLastOpenedExercise(
-                                  item.path,
-                                );
-
-                                _loadLastOpenedExercise();
-                                if (mounted) {
-                                  context.push('${item.path}');
-                                }
-                              },
                               data: item,
                               isFirst: idx == 0,
                               isLast: isLast,
-                              isLastPlayed: isLastPlayed,
+                              isLastPlayed: isCurrentlyLastPlayed,
+                              imageUrl: item.imageUrl,
                             );
                           }).toList(),
                     ),
@@ -322,7 +255,7 @@ class _ModuleTile extends StatelessWidget {
   final bool isLastPlayed;
   final bool isFirst;
   final bool isLast;
-  final VoidCallback onTap;
+  final String imageUrl;
 
   const _ModuleTile({
     Key? key,
@@ -330,7 +263,7 @@ class _ModuleTile extends StatelessWidget {
     required this.isLastPlayed,
     required this.isFirst,
     required this.isLast,
-    required this.onTap,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -338,145 +271,199 @@ class _ModuleTile extends StatelessWidget {
     // Left column width for timeline icons
     const double leftColumnWidth = 40;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ------------------ TIMELINE COLUMN ------------------
-          SizedBox(
-            width: leftColumnWidth,
-            child: Column(
-              children: [
-                // Top spacing for the first item so the dot sits lower
-                if (!isFirst) const SizedBox(height: 8),
-                // Icon: either playing or locked
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ------------------ TIMELINE COLUMN ------------------
+        SizedBox(
+          width: leftColumnWidth,
+          child: Column(
+            children: [
+              // Top spacing for the first item so the dot sits lower
+              if (!isFirst) const SizedBox(height: 8),
+              // Icon: either playing or locked
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color:
+                      data.isLocked
+                          ? Colors.grey.shade200
+                          : (isLastPlayed ? Colors.amber[600] : Colors.white),
+                  shape: BoxShape.circle,
+                  border: Border.all(
                     color:
                         data.isLocked
-                            ? Colors.grey.shade200
-                            : (isLastPlayed ? Colors.amber[600] : Colors.white),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color:
-                          data.isLocked
-                              ? Colors.grey.shade400
-                              : (isLastPlayed
-                                  ? Colors.amber[600]!
-                                  : Colors.grey.shade400),
-                      width: 2,
+                            ? Colors.grey.shade400
+                            : (isLastPlayed
+                                ? Colors.amber[600]!
+                                : Colors.grey.shade400),
+                    width: 2,
+                  ),
+                ),
+                child:
+                    data.isLocked
+                        ? const Icon(Icons.lock, size: 14, color: Colors.grey)
+                        : (isLastPlayed
+                            ? const Icon(
+                              Icons.play_arrow,
+                              size: 14,
+                              color: Colors.white,
+                            )
+                            : null),
+              ),
+              // Vertical line between icons, except after the last item
+              if (!isLast)
+                Container(
+                  width: 2,
+                  height: 120,
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  color: Colors.grey.shade300,
+                ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 12),
+
+        // ------------------ MODULE CARD ------------------
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: data.isLocked ? Colors.white : Colors.green[50],
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Hero(
+                  tag: imageUrl,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      height: 30,
+                      width: double.infinity,
                     ),
                   ),
-                  child:
-                      data.isLocked
-                          ? const Icon(Icons.lock, size: 14, color: Colors.grey)
-                          : (isLastPlayed
-                              ? const Icon(
-                                Icons.play_arrow,
-                                size: 14,
-                                color: Colors.white,
-                              )
-                              : null),
                 ),
-                // Vertical line between icons, except after the last item
-                if (!isLast)
-                  Container(
-                    width: 2,
-                    height: 80,
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    color: Colors.grey.shade300,
+                // MODULE label
+                Text(
+                  data.moduleLabel,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: data.isLocked ? Colors.grey : Colors.green[700],
+                    fontWeight: FontWeight.w600,
                   ),
+                ),
+
+                const SizedBox(height: 6),
+
+                // Title
+                Text(
+                  data.title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color:
+                        data.isLocked ? Colors.grey.shade700 : Colors.black87,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Duration and lessons count row
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: data.isLocked ? Colors.grey : Colors.grey,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      data.duration,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: data.isLocked ? Colors.grey : Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Icon(
+                      Icons.menu_book,
+                      size: 14,
+                      color: data.isLocked ? Colors.grey : Colors.grey,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${data.lessonsCount} lessons',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: data.isLocked ? Colors.grey : Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                // Wrap in a fixed-height container (so ListView knows its height)
+                Container(
+                  height: 50, // adjust as needed for your item’s height
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.zero,
+                    itemCount: data.subModules.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                            'a1exercise',
+                            pathParameters: {
+                              'exerciseNumber':
+                                  data.subModules[index].path.split('/').last,
+                            },
+                            queryParameters: {'imageUrl': imageUrl},
+                          );
+                        },
+                        child: Container(
+                          // give each item a fixed width (so you can see multiple at once)
+                          width: 50,
+                          margin: const EdgeInsets.only(
+                            right: 8,
+                          ), // 4px space between items
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.greenAccent[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            data.subModules[index].title,
+                            style: const TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
-
-          const SizedBox(width: 12),
-
-          // ------------------ MODULE CARD ------------------
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: data.isLocked ? Colors.white : Colors.green[50],
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // MODULE label
-                  Text(
-                    data.moduleLabel,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: data.isLocked ? Colors.grey : Colors.green[700],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  // Title
-                  Text(
-                    data.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color:
-                          data.isLocked ? Colors.grey.shade700 : Colors.black87,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Duration and lessons count row
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 14,
-                        color: data.isLocked ? Colors.grey : Colors.grey,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        data.duration,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: data.isLocked ? Colors.grey : Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Icon(
-                        Icons.menu_book,
-                        size: 14,
-                        color: data.isLocked ? Colors.grey : Colors.grey,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${data.lessonsCount} lessons',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: data.isLocked ? Colors.grey : Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

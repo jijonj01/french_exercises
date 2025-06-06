@@ -1,16 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class A1Three extends StatefulWidget {
-  const A1Three({Key? key}) : super(key: key);
+  final String imageUrl;
+  const A1Three({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
-  _A1ThreeState createState() => _A1ThreeState();
+  State<A1Three> createState() => _A1ThreeState();
 }
 
 class _A1ThreeState extends State<A1Three> {
   // ====== Exercise 1 state ======
-  // Keys: "c1" through "c6", values: "consonne" or "voyelle"
   final Map<String, String?> _exercise1Answers = {
     'c1': null, // D
     'c2': null, // A
@@ -21,7 +23,6 @@ class _A1ThreeState extends State<A1Three> {
   };
 
   // ====== Exercise 2 state ======
-  // Keys: "a" through "e", values: one of the provided options
   final Map<String, String?> _exercise2Answers = {
     'a': null, // L’accent aigu
     'b': null, // L’accent grave
@@ -31,7 +32,6 @@ class _A1ThreeState extends State<A1Three> {
   };
 
   // ====== Exercise 3 state ======
-  // Keys: "w1" through "w5", values: single-character input
   final Map<String, TextEditingController> _exercise3Controllers = {
     'w1': TextEditingController(), // M_re → È (MÈRE)
     'w2': TextEditingController(), // _le → Î (ÎLE)
@@ -72,15 +72,6 @@ class _A1ThreeState extends State<A1Three> {
     'w3': 'Ç', // GARÇON
     'w4': 'Ô', // HÔPITAL
     'w5': 'Ü', // AMBIGÜE
-  };
-
-  // Hints (full word) for Exercise 3
-  final Map<String, String> _hints3 = {
-    'w1': '(MÈRE)',
-    'w2': '(ÎLE)',
-    'w3': '(GARÇON)',
-    'w4': '(HÔPITAL)',
-    'w5': '(AMBIGÜE)',
   };
 
   // Mapping of common accented characters to their base letter
@@ -203,7 +194,6 @@ class _A1ThreeState extends State<A1Three> {
 
   @override
   void dispose() {
-    // Dispose controllers
     for (final controller in _exercise3Controllers.values) {
       controller.dispose();
     }
@@ -213,229 +203,324 @@ class _A1ThreeState extends State<A1Three> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Exercices – Lettres et Accents Français 1.3',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+      // No AppBar: use a custom header with image and back button
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // --- HEADER IMAGE + BACK/BKMK OVERLAYS ---
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(32),
+                        bottomRight: Radius.circular(32),
+                      ),
+                      child: Hero(
+                        tag: widget.imageUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.imageUrl,
+                          height: 240,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    // Back arrow (top left)
+                    Positioned(
+                      top: 40,
+                      left: 16,
+                      child: GestureDetector(
+                        onTap: () {
+                          context.pop();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 20,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Bookmark icon (top right) – optional
+                    Positioned(
+                      top: 40,
+                      right: 16,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.bookmark_border,
+                          size: 24,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // --- EXERCISE CONTENT ---
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Page title
+                      const Text(
+                        'Exercices – Lettres et Accents Français 1.3',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // ====== Exercice 1 ======
+                      const Text(
+                        'Exercice 1 : Identifiez si chaque lettre est une consonne ou une voyelle.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Les consonnes vont de B à Z (à l\'exception de A, E, I, O, U, H) et les voyelles sont A, E, I, O, U, H.',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 16),
+                      DataTable(
+                        columns: const [
+                          DataColumn(
+                            label: Text(
+                              'Lettre',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Consonne',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Voyelle',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                        rows: [
+                          _buildExercise1Row('D', 'c1'),
+                          _buildExercise1Row('A', 'c2'),
+                          _buildExercise1Row('S', 'c3'),
+                          _buildExercise1Row('O', 'c4'),
+                          _buildExercise1Row('E', 'c5'),
+                          _buildExercise1Row('T', 'c6'),
+                        ],
+                        headingRowColor: MaterialStateProperty.resolveWith(
+                          (states) => const Color(0xFFE0E0E0),
+                        ),
+                        dataRowHeight: 56,
+                      ),
+                      const SizedBox(height: 32),
+
+                      // ====== Exercice 2 ======
+                      const Text(
+                        'Exercice 2 : Associez chaque accent à sa description et exemple.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Choisissez, pour chaque type d’accent, la bonne description/exemple.',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // a. L’accent aigu
+                      _buildExercise2Group(
+                        questionKey: 'a',
+                        questionText: 'a. L’accent aigu',
+                        options: const {
+                          'é': 'é (été)',
+                          'è': 'è (père)',
+                          'ü': 'ü (naïf)',
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // b. L’accent grave
+                      _buildExercise2Group(
+                        questionKey: 'b',
+                        questionText: 'b. L’accent grave',
+                        options: const {
+                          'à': 'à (là)',
+                          'â': 'â (château)',
+                          'ç': 'ç (garçon)',
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // c. La cédille
+                      _buildExercise2Group(
+                        questionKey: 'c',
+                        questionText: 'c. La cédille',
+                        options: const {
+                          'ç': 'ç (leçon)',
+                          'ê': 'ê (forêt)',
+                          'é': 'é (marché)',
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // d. L’accent circonflexe
+                      _buildExercise2Group(
+                        questionKey: 'd',
+                        questionText: 'd. L’accent circonflexe',
+                        options: const {
+                          'â': 'â (château)',
+                          'é': 'é (marché)',
+                          'ë': 'ë (Noël)',
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // e. Le tréma
+                      _buildExercise2Group(
+                        questionKey: 'e',
+                        questionText: 'e. Le tréma',
+                        options: const {
+                          'ë': 'ë (Noël)',
+                          'î': 'î (île)',
+                          'é': 'é (été)',
+                        },
+                      ),
+                      const SizedBox(height: 32),
+
+                      // ====== Exercice 3 ======
+                      const Text(
+                        'Exercice 3 : Complétez les mots suivants avec la bonne lettre accentuée.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Indiquez la lettre exacte (avec accent) dans chaque champ.',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildExercise3Field(
+                        label: 'a. M_re → ',
+                        controller: _exercise3Controllers['w1']!,
+                        hint: '?',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildExercise3Field(
+                        label: 'b. _le → ',
+                        controller: _exercise3Controllers['w2']!,
+                        hint: '?',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildExercise3Field(
+                        label: 'c. Gar_on → ',
+                        controller: _exercise3Controllers['w3']!,
+                        hint: '?',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildExercise3Field(
+                        label: 'd. H_pital → ',
+                        controller: _exercise3Controllers['w4']!,
+                        hint: '?',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildExercise3Field(
+                        label: 'e. Ambigu_ → ',
+                        controller: _exercise3Controllers['w5']!,
+                        hint: '?',
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Vérifier mes réponses button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _checkAnswers,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber[600],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            elevation: 4,
+                          ),
+                          child: const Text(
+                            'Vérifier mes réponses',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // ====== Résultats ======
+                      if (_showResults) ...[
+                        const Divider(thickness: 1.2),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Résultats',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Exercice 1 – Consonnes/Voyelles : $_score1 / ${_correct1.length}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Exercice 2 – Types d\'accents : $_score2 / ${_correct2.length}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Exercice 3 – Complétez les mots : $_score3 / ${_correct3.length}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
-        ),
-        backgroundColor: const Color(0xFF0056B3),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ====== Exercice 1 ======
-            const Text(
-              'Exercice 1 : Identifiez si chaque lettre est une consonne ou une voyelle.',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0056B3),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Les consonnes vont de B à Z (à l’exception de A, E, I, O, U, H) et les voyelles sont A, E, I, O, U, H.',
-            ),
-            const SizedBox(height: 12),
-            DataTable(
-              columns: const [
-                DataColumn(
-                  label: Text(
-                    'Lettre',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Consonne',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Voyelle',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-              rows: [
-                _buildExercise1Row('D', 'c1'),
-                _buildExercise1Row('A', 'c2'),
-                _buildExercise1Row('S', 'c3'),
-                _buildExercise1Row('O', 'c4'),
-                _buildExercise1Row('E', 'c5'),
-                _buildExercise1Row('T', 'c6'),
-              ],
-              headingRowColor: MaterialStateProperty.resolveWith(
-                (states) => const Color(0xFFE0E0E0),
-              ),
-              dataRowHeight: 56,
-            ),
-            const SizedBox(height: 24),
-
-            // ====== Exercice 2 ======
-            const Text(
-              'Exercice 2 : Associez chaque accent à sa description et exemple.',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0056B3),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Pour chaque type d’accent (a, b, c, d, e), sélectionnez la lettre correspondant à l’exemple correct.',
-            ),
-            const SizedBox(height: 12),
-
-            // a. L’accent aigu
-            _buildExercise2Group(
-              questionKey: 'a',
-              questionText: 'a. L’accent aigu',
-              options: const {'é': 'é (été)', 'è': 'è (père)', 'ü': 'ü (naïf)'},
-            ),
-            const SizedBox(height: 12),
-            // b. L’accent grave
-            _buildExercise2Group(
-              questionKey: 'b',
-              questionText: 'b. L’accent grave',
-              options: const {
-                'à': 'à (là)',
-                'â': 'â (château)',
-                'ç': 'ç (garçon)',
-              },
-            ),
-            const SizedBox(height: 12),
-            // c. La cédille
-            _buildExercise2Group(
-              questionKey: 'c',
-              questionText: 'c. La cédille',
-              options: const {
-                'ç': 'ç (leçon)',
-                'ê': 'ê (forêt)',
-                'é': 'é (marché)',
-              },
-            ),
-            const SizedBox(height: 12),
-            // d. L’accent circonflexe
-            _buildExercise2Group(
-              questionKey: 'd',
-              questionText: 'd. L’accent circonflexe',
-              options: const {
-                'â': 'â (château)',
-                'é': 'é (marché)',
-                'ë': 'ë (Noël)',
-              },
-            ),
-            const SizedBox(height: 12),
-            // e. Le tréma
-            _buildExercise2Group(
-              questionKey: 'e',
-              questionText: 'e. Le tréma',
-              options: const {'ë': 'ë (Noël)', 'î': 'î (île)', 'é': 'é (été)'},
-            ),
-            const SizedBox(height: 24),
-
-            // ====== Exercice 3 ======
-            const Text(
-              'Exercice 3 : Complétez les mots suivants avec la bonne lettre accentuée.',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0056B3),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Indiquez la lettre exacte (avec accent) dans chaque champ.',
-            ),
-            const SizedBox(height: 12),
-            _buildExercise3Field(
-              label: 'a. M_re → ',
-              controller: _exercise3Controllers['w1']!,
-              hintText: _hints3['w1']!,
-            ),
-            const SizedBox(height: 8),
-            _buildExercise3Field(
-              label: 'b. _le → ',
-              controller: _exercise3Controllers['w2']!,
-              hintText: _hints3['w2']!,
-            ),
-            const SizedBox(height: 8),
-            _buildExercise3Field(
-              label: 'c. Gar_on → ',
-              controller: _exercise3Controllers['w3']!,
-              hintText: _hints3['w3']!,
-            ),
-            const SizedBox(height: 8),
-            _buildExercise3Field(
-              label: 'd. H_pital → ',
-              controller: _exercise3Controllers['w4']!,
-              hintText: _hints3['w4']!,
-            ),
-            const SizedBox(height: 8),
-            _buildExercise3Field(
-              label: 'e. Ambigu_ → ',
-              controller: _exercise3Controllers['w5']!,
-              hintText: _hints3['w5']!,
-            ),
-            const SizedBox(height: 24),
-
-            // Vérifier mes réponses button
-            Center(
-              child: ElevatedButton(
-                onPressed: _checkAnswers,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0056B3),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text(
-                  'Vérifier mes réponses',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // ====== Résultats ======
-            if (_showResults) ...[
-              const Divider(thickness: 1.2),
-              const SizedBox(height: 12),
-              const Text(
-                'Résultats',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0056B3),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Exercice 1 – Consonnes/Voyelles : $_score1 / ${_correct1.length}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Exercice 2 – Types d\'accents : $_score2 / ${_correct2.length}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Exercice 3 – Complétez les mots : $_score3 / ${_correct3.length}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -485,7 +570,11 @@ class _A1ThreeState extends State<A1Three> {
       children: [
         Text(
           questionText,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.black87,
+          ),
         ),
         const SizedBox(height: 4),
         ...options.entries.map((entry) {
@@ -510,15 +599,25 @@ class _A1ThreeState extends State<A1Three> {
   Widget _buildExercise3Field({
     required String label,
     required TextEditingController controller,
-    required String hintText,
+    required String hint,
   }) {
+    // Find correct accent for hint display
+    final accentExample =
+        _correct3[_exercise3Controllers.entries
+            .firstWhere((c) => c.value == controller)
+            .key]!;
+
     return Row(
       children: [
         Expanded(
           flex: 3,
           child: Text(
             label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
         ),
         Expanded(
@@ -530,7 +629,7 @@ class _A1ThreeState extends State<A1Three> {
             textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
               counterText: '',
-              hintText: '?',
+              hintText: hint,
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 8,
@@ -545,7 +644,7 @@ class _A1ThreeState extends State<A1Three> {
         Expanded(
           flex: 2,
           child: Text(
-            hintText,
+            accentExample,
             style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
         ),
