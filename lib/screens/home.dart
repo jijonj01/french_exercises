@@ -236,7 +236,7 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Keep Learning, keep growing',
+                        'Keep Learning, with entirely different exercises.',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -244,8 +244,8 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       const Text(
-                        'Lets keep learning fun and engaging',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        'Here we have entirely different exercises for you to boost your French skills and help you retain longer. Nothing monotonous, just fun and engaging exercises updated monthly.',
+                        style: TextStyle(fontSize: 18, color: Colors.black87),
                       ),
                       const SizedBox(height: 10),
                     ],
