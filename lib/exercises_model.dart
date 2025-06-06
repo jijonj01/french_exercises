@@ -57,4 +57,18 @@ final List<ModuleItem> a1Modules = const [
       SubModuleItem(title: '3', path: '/a1exercise/6'),
     ],
   ),
+  ModuleItem(
+    id: 3,
+    title: 'A1 Course - Module 3',
+    imageUrl: 'https://picsum.photos/800/1200?random=30',
+    moduleLabel: 'A1 Course - Module 3',
+    duration: '1.5 hours',
+    lessonsCount: 4,
+    isLocked: false,
+    subModules: [
+      SubModuleItem(title: '1', path: '/a1exercise/7'),
+      SubModuleItem(title: '2', path: '/a1exercise/8'),
+      SubModuleItem(title: '3', path: '/a1exercise/9'),
+    ],
+  ),
 ];

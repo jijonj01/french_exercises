@@ -4,6 +4,8 @@ import 'package:french_exercises/exercises_model.dart';
 import 'package:french_exercises/services/module_progress_service.dart';
 import 'package:go_router/go_router.dart';
 
+String? lastOpenedExercise;
+
 class CourseDetailPage extends StatefulWidget {
   final String course;
   final String imageUrl;
@@ -50,10 +52,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   children: [
                     // Header image (replace with your own asset or network)
                     ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(32),
-                        bottomRight: Radius.circular(32),
-                      ),
                       child: Hero(
                         tag: widget.imageUrl,
                         child: CachedNetworkImage(
@@ -250,7 +248,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 }
 
 /// A single module row, with a vertical timeline indicator on the left
-class _ModuleTile extends StatelessWidget {
+class _ModuleTile extends StatefulWidget {
   final ModuleItem data;
   final bool isLastPlayed;
   final bool isFirst;
@@ -267,6 +265,26 @@ class _ModuleTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<_ModuleTile> createState() => _ModuleTileState();
+}
+
+class _ModuleTileState extends State<_ModuleTile> {
+  @override
+  void initState() {
+    super.initState();
+    _loadLastOpenedExercise();
+  }
+
+  Future<void> _loadLastOpenedExercise() async {
+    final lastExercise = await ModuleProgressService.getLastOpenedExercise();
+    if (mounted) {
+      setState(() {
+        lastOpenedExercise = lastExercise;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Left column width for timeline icons
     const double leftColumnWidth = 40;
@@ -280,31 +298,33 @@ class _ModuleTile extends StatelessWidget {
           child: Column(
             children: [
               // Top spacing for the first item so the dot sits lower
-              if (!isFirst) const SizedBox(height: 8),
+              if (!widget.isFirst) const SizedBox(height: 8),
               // Icon: either playing or locked
               Container(
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
                   color:
-                      data.isLocked
+                      widget.data.isLocked
                           ? Colors.grey.shade200
-                          : (isLastPlayed ? Colors.amber[600] : Colors.white),
+                          : (lastOpenedExercise == widget.data.id.toString()
+                              ? Colors.amber[600]
+                              : Colors.white),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color:
-                        data.isLocked
+                        widget.data.isLocked
                             ? Colors.grey.shade400
-                            : (isLastPlayed
+                            : (lastOpenedExercise == widget.data.id.toString()
                                 ? Colors.amber[600]!
                                 : Colors.grey.shade400),
                     width: 2,
                   ),
                 ),
                 child:
-                    data.isLocked
+                    widget.data.isLocked
                         ? const Icon(Icons.lock, size: 14, color: Colors.grey)
-                        : (isLastPlayed
+                        : (lastOpenedExercise == widget.data.id.toString()
                             ? const Icon(
                               Icons.play_arrow,
                               size: 14,
@@ -313,7 +333,7 @@ class _ModuleTile extends StatelessWidget {
                             : null),
               ),
               // Vertical line between icons, except after the last item
-              if (!isLast)
+              if (!widget.isLast)
                 Container(
                   width: 2,
                   height: 120,
@@ -332,7 +352,7 @@ class _ModuleTile extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 24),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: data.isLocked ? Colors.white : Colors.green[50],
+              color: widget.data.isLocked ? Colors.white : Colors.green[50],
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -346,11 +366,11 @@ class _ModuleTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Hero(
-                  tag: imageUrl,
+                  tag: widget.imageUrl,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrl,
+                      imageUrl: widget.imageUrl,
                       fit: BoxFit.cover,
                       height: 30,
                       width: double.infinity,
@@ -359,10 +379,11 @@ class _ModuleTile extends StatelessWidget {
                 ),
                 // MODULE label
                 Text(
-                  data.moduleLabel,
+                  widget.data.moduleLabel,
                   style: TextStyle(
                     fontSize: 12,
-                    color: data.isLocked ? Colors.grey : Colors.green[700],
+                    color:
+                        widget.data.isLocked ? Colors.grey : Colors.green[700],
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -371,12 +392,14 @@ class _ModuleTile extends StatelessWidget {
 
                 // Title
                 Text(
-                  data.title,
+                  widget.data.title,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color:
-                        data.isLocked ? Colors.grey.shade700 : Colors.black87,
+                        widget.data.isLocked
+                            ? Colors.grey.shade700
+                            : Colors.black87,
                   ),
                 ),
 
@@ -388,28 +411,28 @@ class _ModuleTile extends StatelessWidget {
                     Icon(
                       Icons.access_time,
                       size: 14,
-                      color: data.isLocked ? Colors.grey : Colors.grey,
+                      color: widget.data.isLocked ? Colors.grey : Colors.grey,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      data.duration,
+                      widget.data.duration,
                       style: TextStyle(
                         fontSize: 12,
-                        color: data.isLocked ? Colors.grey : Colors.grey,
+                        color: widget.data.isLocked ? Colors.grey : Colors.grey,
                       ),
                     ),
                     const SizedBox(width: 16),
                     Icon(
                       Icons.menu_book,
                       size: 14,
-                      color: data.isLocked ? Colors.grey : Colors.grey,
+                      color: widget.data.isLocked ? Colors.grey : Colors.grey,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${data.lessonsCount} lessons',
+                      '${widget.data.lessonsCount} lessons',
                       style: TextStyle(
                         fontSize: 12,
-                        color: data.isLocked ? Colors.grey : Colors.grey,
+                        color: widget.data.isLocked ? Colors.grey : Colors.grey,
                       ),
                     ),
                   ],
@@ -421,17 +444,26 @@ class _ModuleTile extends StatelessWidget {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.zero,
-                    itemCount: data.subModules.length,
+                    itemCount: widget.data.subModules.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          //set shared preferences
+                          await ModuleProgressService.setLastOpenedExercise(
+                            widget.data.id.toString(),
+                          );
+
+                          await _loadLastOpenedExercise();
+
                           context.pushNamed(
                             'a1exercise',
                             pathParameters: {
                               'exerciseNumber':
-                                  data.subModules[index].path.split('/').last,
+                                  widget.data.subModules[index].path
+                                      .split('/')
+                                      .last,
                             },
-                            queryParameters: {'imageUrl': imageUrl},
+                            queryParameters: {'imageUrl': widget.imageUrl},
                           );
                         },
                         child: Container(
@@ -450,7 +482,7 @@ class _ModuleTile extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            data.subModules[index].title,
+                            widget.data.subModules[index].title,
                             style: const TextStyle(fontSize: 14),
                             overflow: TextOverflow.ellipsis,
                           ),

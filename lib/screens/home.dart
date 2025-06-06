@@ -74,8 +74,8 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
                 ),
                 child: SafeArea(

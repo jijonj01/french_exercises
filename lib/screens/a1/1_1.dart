@@ -217,10 +217,6 @@ class _A1OneState extends State<A1One> {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(32),
-                        bottomRight: Radius.circular(32),
-                      ),
                       child: Hero(
                         tag: widget.imageUrl,
                         child: CachedNetworkImage(

@@ -5,6 +5,8 @@ import 'package:french_exercises/screens/a1/1_3.dart';
 import 'package:french_exercises/screens/a1/2_1.dart';
 import 'package:french_exercises/screens/a1/2_2.dart';
 import 'package:french_exercises/screens/a1/2_3.dart';
+import 'package:french_exercises/screens/a1/3_1.dart';
+import 'package:french_exercises/screens/a1/3_2.dart';
 import 'package:go_router/go_router.dart';
 import 'package:french_exercises/screens/about.dart';
 import 'package:french_exercises/screens/home.dart';
@@ -65,6 +67,10 @@ final GoRouter appRouter = GoRouter(
             return A1Five(imageUrl: imageUrl);
           case '6':
             return A1Six(imageUrl: imageUrl);
+          case '7':
+            return A1Seven(imageUrl: imageUrl);
+          case '8':
+            return A1Eight(imageUrl: imageUrl);
           default:
             // Handle invalid exercise numbers
             return const Scaffold(

@@ -730,10 +730,6 @@ class _A1FourState extends State<A1Four> with SingleTickerProviderStateMixin {
         children: [
           // Header image + back/bookmark overlays
           ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(32),
-              bottomRight: Radius.circular(32),
-            ),
             child: Hero(
               tag: widget.imageUrl,
               child: CachedNetworkImage(
