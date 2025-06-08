@@ -250,44 +250,41 @@ class _A1ElevenState extends State<A1Eleven> {
                             const SizedBox(height: 20),
 
                             // Choices Grid
-                            GridView.count(
-                              crossAxisCount: 2,
+                            ListView.builder(
                               shrinkWrap: true,
-                              mainAxisSpacing: 12,
-                              crossAxisSpacing: 12,
-                              childAspectRatio: 3,
                               physics: const NeverScrollableScrollPhysics(),
-                              children:
-                                  _options.map((num) {
-                                    final isDisabled = _answered;
-                                    return ElevatedButton(
-                                      onPressed:
-                                          isDisabled
-                                              ? null
-                                              : () => _checkAnswer(num),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            isDisabled
-                                                ? const Color(0xFF95A5A6)
-                                                : const Color(0xFF3498DB),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
+                              itemCount: _options.length,
+
+                              itemBuilder: (context, index) {
+                                final key = _options[index];
+                                final isDisabled = _answered;
+                                return GestureDetector(
+                                  onTap:
+                                      isDisabled
+                                          ? null
+                                          : () => _checkAnswer(key),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightGreen,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    margin: const EdgeInsets.all(10),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          _nombreFr[key] ?? "Inconnu",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
                                           ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      child: Text(
-                                        _nombreFr[num]!,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 20),
 

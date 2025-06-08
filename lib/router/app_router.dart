@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:french_exercises/screens/a1/10_1.dart';
+import 'package:french_exercises/screens/a1/10_2.dart';
+import 'package:french_exercises/screens/a1/10_3.dart';
+import 'package:french_exercises/screens/a1/11_1.dart';
+import 'package:french_exercises/screens/a1/11_2.dart';
+import 'package:french_exercises/screens/a1/11_3.dart';
 import 'package:french_exercises/screens/a1/1_1.dart';
 import 'package:french_exercises/screens/a1/1_2.dart';
 import 'package:french_exercises/screens/a1/1_3.dart';
@@ -13,6 +19,11 @@ import 'package:french_exercises/screens/a1/5_1.dart';
 import 'package:french_exercises/screens/a1/5_2.dart';
 import 'package:french_exercises/screens/a1/6_1.dart';
 import 'package:french_exercises/screens/a1/6_2.dart';
+import 'package:french_exercises/screens/a1/7_1.dart';
+import 'package:french_exercises/screens/a1/7_2.dart';
+import 'package:french_exercises/screens/a1/8_1.dart';
+import 'package:french_exercises/screens/a1/8_2.dart';
+import 'package:french_exercises/screens/a1/9_1.dart';
 import 'package:go_router/go_router.dart';
 import 'package:french_exercises/screens/about.dart';
 import 'package:french_exercises/screens/home.dart';
@@ -89,6 +100,38 @@ final GoRouter appRouter = GoRouter(
             return A1Thirteen();
           case '14':
             return A1Fourteen();
+          case '15':
+            return A1Fifteen();
+          case '16':
+            return A1Sixteen();
+          case '17':
+            return A1Seventeen();
+          case '18':
+            return A1Eighteen();
+          case '19':
+            return A1Nineteen();
+          case '20':
+            return A1Twenty();
+          case '21':
+            return A1TwentyOne();
+          case '22':
+            return A1TwentyTwo();
+          case '23':
+            return A1TwentyThree(imageUrl: imageUrl);
+          case '24':
+            return A1TwentyFour(imageUrl: imageUrl);
+          case '25':
+            return A1TwentyFive(imageUrl: imageUrl);
+          // case '26':
+          //   return A1TwentySix();
+          // case '27':
+          //   return A1TwentySeven();
+          // case '28':
+          //   return A1TwentyEight();
+          // case '29':
+          //   return A1TwentyNine();
+          // case '30':
+          //   return A1Thirty();
           default:
             // Handle invalid exercise numbers
             return const Scaffold(

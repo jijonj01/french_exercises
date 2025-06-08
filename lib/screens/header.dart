@@ -53,24 +53,6 @@ class GameHeader extends StatelessWidget {
             ),
           ),
         ),
-
-        // Bookmark icon (top-right)
-        Positioned(
-          top: 40,
-          right: 16,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.bookmark_border,
-              size: 24,
-              color: Colors.black87,
-            ),
-          ),
-        ),
       ],
     );
   }
